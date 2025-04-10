@@ -1,0 +1,239 @@
+Arquitectura y servicios distribuidos:
+
+¿Cómo diseñarías una arquitectura de microservicios para una aplicación altamente disponible?
+	Comenzaria separando las funcionalidades clave de la aplicacion en diferentes servicios, cada uno con su base de datos y CI/CD.
+	Para las solicitudes se puede usar el patron API Gateway de los clientes.
+	Comunicacion entre servicios es con RESTful APIs.
+	
+	Health checks -> Son chequeos que se hacen al servicio para ver si esta bien o mal, estos pueden ser:
+		- Nivel applicacion: 
+		Si el servicio esta funcionando correctamente, usualmente con ruta dedicada como /health o /status que devuelve un OK o FAIL.
+		
+		- Nivel systema:
+		Verifican que los recursos como CPU, Memoria y RED esten disponibles y operando. El OS se encarga de esto usualmente.
+
+¿Qué estrategias usarías para asegurar la tolerancia a fallos en una aplicación de alto tráfico?
+	Para la alta disponibilidad se pueden usar balanceadores de carga para distribuir el trafico, para resiliencia se usan patrones como circuit breaker y retry:
+	
+	Tipos de health checks:
+		- Liveness check:
+		Indica si la aplicacion esta viva o colgada. Si falla, el servicio se puede reiniciar.
+		
+		- Readiness check:
+		Indica si el servicio esta listo para recibir trafico.
+	
+	Auto-scaling -> Mecanismo que ajusta automaticamente el numero de instancias de un microservicio en funcion de la demanda.
+	
+	Tipos de auto-scaling:
+		- Horizontal scaling:
+		Aumenta o disminuye el numero de instancias del servicio.
+		
+		- Vertical scaling:
+		Aumenta o disminuye los recursos de CPU o memoria de una instancia. Casi no es usado.
+	
+	Herramientas de auto-scaling:
+		- Kubernetes horizontal pod autoscaler
+		- AWS auto scaling
+		- Google kubernetes engine
+	
+	Circuit breaker -> Es un patron que evita que se mande a llamar a un servicio que esta fallando, si el servicio falla entonces se espera una cantidad de tiempo y retorna un fail del servicio sin llamar a este, despues de que pasa el tiempo manda un poco de requests para ver si el servicio sigue abajo.
+	
+	Retry -> Consiste en volver a intentar realizar una solicitud fallida a un servicio despues de un error, util para fallos transitorios o temporales como problemas de red o saturacion.
+
+¿Qué prácticas recomiendas para diseñar y consumir APIs RESTful?
+	- Disenio de URLs basadas en sutantivos y no en verbos.
+	- Metodos HTTP (GET, POST, PUT, DELETE) segun la accion requerida.
+	- Usar formato JSON o XML para las respuestas y usar codigo de estado HTTP como 404 para no encontrado.
+	
+	¿Cómo manejarías la autenticación y autorización en una API RESTful?
+	- Autenticacion y autorizacion seguras, como OAuth 2.0 o JWT, para proteger los recursos.
+
+Desarrollo en Java y otros lenguajes:
+
+Cuéntame sobre un proyecto reciente en Java. ¿Qué desafíos enfrentaste y cómo los resolviste?
+¿Cómo gestionas la concurrencia en Java? ¿Puedes explicar el uso de synchronized o volatile?
+	- Para evitar condiciones de carrera se usa ReentrantLock o synchronized.
+	- Para tareas mas complejas se usa Executors y ThreadPools para administrar hilos en lugar de manejarlos directamente.
+	
+	Executors -> Es un framework el cual permite la administracion de hilos en multithreading. Este framework tiene dos interfaces:
+		- Executor interface: 
+		Interfaz que tiene como unico metodo "execute(Runnable command)". Al usar este Executor, el hilo no se crea con new Thread() y en vez se usa Executor para gestionar los hilos.
+		
+		- ExecutorService:
+		Interfaz mas avanzada de Executor que proporciona metodos de finalizacion (shutdown, awaitTermination) asi como para gestionar tareas que devuelven un resultado (submit)
+
+¿Cómo desplegarías una aplicación de microservicios en una infraestructura en la nube?
+	Dividir los microservicios en contenedores utilizando Docker para aislar cada uno con sus propias dependencias. Luego, usar kubernetes para destionar el despliegue, escalabilidad y gestion de fallos.
+	
+	En la nube, usar Amazon Elastic Kubernetes Services (EKS) o Google Kubernetes Engine (GKE) para gestionar la infraestructura subyacente. Usar auto-scaling para que las instancias puedan ajustarse segun la demanda y usaria Cloud load balancers para distribuir el trafico entre las instancias.
+
+Desarrollo orientado a objetos:
+
+¿Cómo aplicarías los principios SOLID en una aplicación orientada a servicios?
+	S- Single responsibility principle: 
+		Establece que una clase debe tener una unica responsibilidad o razon para cambiar.
+	
+	O- Open/Closed principle:
+		Clases abiertas para la extension pero cerradas para la modificacion.
+	
+	L- Liskov Substitution Principle
+		los objetos de una subclase deben poder reemplazar objetos de la clase base sin alterar el correcto funcionamiento del programa.
+	
+	I- Interface Segregation Principle
+		los clientes no deberían verse forzados a depender de interfaces que no usan. Es mejor tener interfaces pequenias y especificas que una unica interfaz grande y generica.
+	
+	D- Dependency Inversion Principle
+		los módulos de alto nivel no deben depender de los módulos de bajo nivel; ambos deben depender de abstracciones.
+		En lugar de que una clase Pedido dependa directamente de una clase EmailService (módulo de bajo nivel), Pedido debería depender de una interfaz NotificacionService. De esta manera, podrías cambiar fácilmente la implementación del servicio de notificación (por ejemplo, para usar SMS en lugar de email) sin modificar la clase Pedido.
+	
+	S: Una clase debe tener una sola responsabilidad.
+	O: Una clase debe ser abierta para extensión, pero cerrada para modificación.
+	L: Los objetos de subclases deben poder sustituir a los de la clase base sin romper el programa.
+	I: Las clases no deben depender de métodos que no usan (segregación de interfaces).
+	D: Las clases deben depender de abstracciones, no de implementaciones concretas.
+	
+	
+¿Cuál es tu enfoque para manejar la herencia y la composición en Java?
+	Empezar principalmente por la abstraccion, definir interfaces que puedan ser reutilizables y que estas se puedan usar de mejor manera.
+
+Java
+¿Cuáles son las diferencias entre HashMap y ConcurrentHashMap? ¿En qué casos preferirías usar cada uno?
+	Hashmap es un mapa no sincronizado en naturalesa, osease no es thread safe. Mientras que ConcurrentHashMap es thread safe. En aplicaciones de varios threads es preferible usar ConcurrentHashMap.
+
+Que es thread safety?
+	Es un concepto que inidca que los objetos de una clase se puede usar desde varios threads sin violar el principio de seguridad. Esto se puede lograr con:
+	
+	Sincronizacion: synchronized en Java, indica que un bloque de codigo, metodo o clase solo puede ejecutarse por una instancia o clase (si es estatica) y esperara a que el objeto que la esta usando termine para poder ejecutar dicho metodo.
+	
+	Objetos inmutables: Al usar objetos o variables inmutables se evita la modificacion de datos compartidos y evitando el uso de sincronizado.
+	
+	Estructuras concurrentes: Algunas bibliotecas como java.util.concurrent incluyen clases que estan diseniadas para multiles hilos.
+	
+	Uso de almacenamiento local de hilos: Permite que cada hilo tenga su propia copia de una variable, evitando conflictos al compartir variables entre hilos.
+
+¿Qué es la Java Memory Model y cómo gestiona la concurrencia en Java?
+	Especifica como se comportan la memoria y los hilos en Java. Define reglas de visibilidad y consistencia de los datos compartidos entre hilos y proporciona un marco para la sincronizacion en entonrnos cocurrentes.
+	
+	Principios:
+		La JMM establece cuando y como los cambios en los datos realizados  por un hilo se hgacen visibles a los demas. Para lograr la correcta visibilidad se usan herramientas como synchronized y el uso de variable con el modificador volatile.
+	
+		El compilador y el procesador pueden optimizar el codigo reordenando instrucciones para mejorar el rendimiento (JIT). Sin embargo esto puede causar errores y dar valores inesperador en variable compartidas. La JMM impone restricciones en el reordenamiento para evitar esto.
+	
+		Atomicidad, garantiza que ciertas operaciones se completen sin interrupciones. Como leer/escribir a una variable int o boolean, pero no en operaciones complejas o en multiples variables.
+	
+	La JMM implementa lo siguiente:
+		- Synchonized
+		- Volatile, indica al compilador que su valor siempre se va a leer de la memoria principal y no del cache de un hilo.
+		- Clases en java.util.concurrent.
+	
+	
+¿Cómo manejarías excepciones para asegurar una aplicación robusta?
+	- Utilizar bloques try-catch para capturar excepciones especificas.
+	- Registrar excepciones para rastreo de errores coin logger.
+	- Definir excepciones personalizadas para contexto especifico.
+	- No silenciar excepciones inesperadas, mejor loguear algo que pueda ocurrir.
+	- Utilizar finally para liberar recursos. Como cerrar un socket o llamar a un destructor.
+	- Para aplicaciones Web, se puede usar @ControllerAdvice para capturar y manejar excepciones en un solo lugar.
+	- Propagar excepciones criticas a un nivel superior si en el nivel actual no se puede resolver.
+	- Fallback o reintentar para operaciones fallidas.
+	- Proporcionar mensajes de error significativos para el usuario.
+
+¿Qué son lambdas y cómo se usan en Java 8 y posteriores?
+	- Son una forma concisa de representar funciones o fragmento de codigo que se pueden pasar como parametros, almacenar en variables y ejecutar en un momento posterior.
+	
+	(parametros) -> expresion
+	
+	O
+	
+	(parametros) -> {
+    // cuerpo del código
+	}
+	
+	Ejemplo:
+	() -> System.out.println("Hola desde una lambda");
+	
+	Con parametros:
+	(int a, int b) -> a + b
+	
+	Interfaces funcionales:
+	Las expresiones lambda en Java funcionan con interfaces funcionales, que son interfaces que tienen un solo metodo abstracto. La anotacion @FunctionalItnerface se usa para asegurarse de que la interfaz tenga un unico metodo abstract.
+
+Que es un servlet?
+	Es una clase que extiende las capacidades de un servidor para gestionar peticiones HTTP (como las de un navegador web) y generar respuestas dinamicas. Estas permiten procesar peticiones y generar contenido dinamico, como paginas HTML, JSON, XML entro otros. Se ejecutan en un servidor de aplicaciones o un servidor web con soporte para Java (como Apache Tomcat, GlassFish o Jetty).
+	
+	Ciclo de vida:
+		- El servidor carga y crea una instancia del servlet una vez.
+		- Se inicializa con el metodo init().
+		- Procesa cada solicitud con el metodo service(), usualmente delega a doGet() o doPost() para manejar peticiones HTTP especificas.
+		- Al terminal, el servidor llama al metodo destroy() para liberar recursos.
+	
+	Gestion de peticiones:
+		- Puede manejar multiples tipos de peticiones, principalmente GET y POST.
+		- Utiliza HttpServletRequest para obtener detalles de la solicitud y HttpServletResponse para enviar la respuesta.
+	
+	Configuracion y despliegue:
+		- Los servlets se configuran típicamente en un archivo web.xml (descriptor de despliegue) o mediante anotaciones @WebServlet en el código.
+	
+	Ejemplo:
+	
+	'''
+	import java.io.IOException;
+	import javax.servlet.ServletException;
+	import javax.servlet.annotation.WebServlet;
+	import javax.servlet.http.HttpServlet;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpServletResponse;
+
+	@WebServlet("/hello")
+	public class HelloWorldServlet extends HttpServlet {
+		@Override
+		protected void doGet(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
+			response.setContentType("text/html");
+			response.getWriter().println("<h1>Hello, World!</h1>");
+		}
+	}
+	'''
+	Above: Este servlet responde a las peticiones en la ruta /hello, generando una respuesta HTML simple con "Hello, World!".
+
+GET, POST y FETCH:
+	GET:
+	- Utilizado para obtener datos de un servidor. Generalmente usado cuando el cliente quiere leer o consultar informacion sin modificar datos del servidor.
+	- Los datos se envian en la URL y son visibles en la barra de direcciones del navegador.
+	- Tiene limitaciones de tamanio en la cantidad de datos que se pueden enviar.
+	- Es una solicitud idempotente, lo que significa que multiples solicitudes identicas deberian tener el mismo efecto.
+	- Es una solicitud segura, osease que no cambia el estado del servidor.
+	
+	Ejemplo:
+		GET /users?id=123 -> Solicita la informacion del usuario con is=123
+	
+	POST:
+	- Utilizado para enviar datos al servidor, generalmente para crear o modificar recursos.
+	- Los datos se envian en el cuerpo de la solicitud, lo que permite enviar grandes cantidades de informacion, a diferencia de GET.
+	- La informacion en el cuerpo no es visible en la URL, lo que proporciona una capa adicional de privacidad.
+	- No es idempotente, ya que enviar la misma solicitud POST varias veces puede crear o modificar datos varias veces.
+	- Es común en formularios de registro, autenticación, y en cualquier escenario donde el cliente envía información al servidor.
+	
+	FETCH:
+	- No es un metodo HTTP en si, si no una API de JavaScript para realizar solicitudes HTTP (GET, POST, PUT, DELETE, etc.) en el contexto de una pagina web o una app web.
+	- Permite hacer peticiones de cualquier metodo HTTP, incluyendo GET y POST.
+	- Su mayor ventaja es que funciona de manera asincrona, permitiendo el uso de promesas para manejar las respuestas.
+	- Se puede configurar para enviar encabezados personalizados, autenticación, entre otros.
+	
+	Ejemplo en JavaScript:
+	'''
+	fetch('https://api.example.com/data', {
+		method: 'GET'
+	}).then(response => response.json())
+	  .then(data => console.log(data))
+	  .catch(error => console.error('Error:', error));
+	'''
+	Above: Este código hace una solicitud GET usando fetch() y luego procesa la respuesta de forma asíncrona.
+
+En resumen:
+	Caracteristica				GET 				POST 				FETCH
+	Tipo de Solicitud			Metodo HTTP			Metodo HTTP			API de JavaScript
+	Envio de Datos				En la URL			En el cuerpo		Configurable
+	Visibilidad					Visible en URL		Oculta en el cuerpo	Control total (asincrona)
+
+Que son las Etag?

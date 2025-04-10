@@ -1,0 +1,175 @@
+std::vector
+	operator[] 	-> accesses element at posicion
+	front()		-> access first element
+	back()		-> acess last element
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	clear()		-> clear the storage
+	erase()		-> erase at position i
+	push_back()	-> push element to the end
+	pop_back()	-> pop the last element
+	
+std::unordered_map
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	begin()		-> return iterator at the start of the map
+	end()		-> return iterator at the end of the map
+	operator[] 	-> accesses element at position
+	find()		-> returns an iterator to the element if found, if not a return iterator to end()
+	count()		-> counts elements with specific key
+	insert()	-> insert an element to the map
+	erase()		-> erase at position i
+	clear()		-> clears all elements from map
+	
+	Custom compare:
+	
+	
+
+std::map
+	begin()		-> return iterator at the start of the map
+	end()		-> return iterator at the end of the map
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	operator[] 	-> accesses element at position
+	insert()	-> insert an element to the map
+	erase()		-> erase at position i
+	clear()		-> clears all elements from map
+	find()		-> returns an iterator to the element if found, if not a return iterator to end()
+	
+	Custom compare:
+	
+	auto comp = [](const string& a, const string& b) { return a.length() < b.length(); };
+	map<string, string, decltype(comp)> my_map(comp);
+
+std::priority_queue
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	top()		-> access top element
+	push()		-> push element to the queue
+	pop()		-> remove top element
+	
+	Custom compare:
+	
+	auto cmp = [](ListNode* a, ListNode* b){return a->val > b->val;};
+    priority_queue<ListNode*,vector<ListNode*>,decltype(cmp)> pq;
+	
+std::unordered_set
+	begin()		-> return iterator at the start of the map
+	end()		-> return iterator at the end of the map
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	find()		-> returns an iterator to the element if found, if not a return iterator to end()
+	count()		-> counts elements with specific key
+	insert()	-> insert an element to the map
+	erase()		-> erase at position i
+	clear()		-> clears all elements from map
+	
+std::set
+	begin()		-> return iterator at the start of the map
+	end()		-> return iterator at the end of the map
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	find()		-> returns an iterator to the element if found, if not a return iterator to end()
+	count()		-> counts elements with specific key
+	insert()	-> insert an element to the map
+	erase()		-> erase at position i
+	clear()		-> clears all elements from map
+	
+	Custom compare:
+	
+	auto comp = [](const string& a, const string& b) { return a.length() < b.length(); };
+	map<string, string, decltype(comp)> my_set(comp);
+
+std:queue
+	empty()		-> returns if the vector is empty
+	size()		-> get size of vector
+	front()		-> acess next element
+	back()		-> access last element
+	push()		-> push element to the back of the queue
+	pop()		-> pop element at the start of the queue
+	
+std:deque
+	begin()
+	end()
+	size()
+	empty()
+	operator[]
+	front()
+	back()
+	push_back()
+	push_front()
+	pop_back()
+	pop_front()
+	insert()
+	erase()
+	clear()
+
+std:stack
+	empty()
+	size()
+	top()
+	push()
+	pop()
+
+
+
+
+Sort: Custom objects:
+	sort(vec.begin(), vec.end(), 
+         [](const Complex& a, const Complex& b) { 
+             // Compare Complex numbers based on their real 
+             // parts 
+             if (a.real == b.real) { 
+                 // If real parts are equal, compare based 
+                 // on imaginary parts 
+                 return a.imag < b.imag; 
+             } 
+             // If real parts are different, use them for 
+             // comparison 
+             return a.real < b.real; 
+         }); 
+	 
+	Normal:
+	
+		bool comp(const dos &h, const dos &k){
+			if(h.time == k.time)
+				return h.id<k.id;
+			return h.time < k.time;
+		}
+		
+		sort(ord_request.begin(),ord_request.end(), comp);
+		
+
+BFS:
+
+// BFS from given source s
+void bfs(vector<vector<int>>& adj, int s,
+                 vector<bool>& visited) 
+{
+    // Create a queue for BFS
+    queue<int> q;
+
+    // Mark the source node as visited and 
+    // enqueue it
+    visited[s] = true;
+    q.push(s);
+
+    // Iterate over the queue
+    while (!q.empty()) {
+      
+        // Dequeue a vertex from queue and print it
+        int curr = q.front();
+        q.pop();
+        cout << curr << " ";
+
+        // Get all adjacent vertices of the dequeued 
+        // vertex curr If an adjacent has not been 
+        // visited, mark it visited and enqueue it
+        for (int x : adj[curr]) {
+            if (!visited[x]) {
+                visited[x] = true;
+                q.push(x);
+            }
+        }
+    }
+}
